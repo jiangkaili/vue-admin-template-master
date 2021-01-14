@@ -11,6 +11,7 @@
         <el-input v-model="courseInfo.title" placeholder=" 示例：机器学习项目课：从基础到搭建项目视频课程。专业名称注意大小写"/>
       </el-form-item>
 
+
       <!-- 所属分类 -->
       <el-form-item label="课程分类">
 
@@ -32,6 +33,7 @@
 
       </el-form-item>
 
+
       <!-- 课程讲师 -->
       <el-form-item label="课程讲师">
         <el-select
@@ -45,16 +47,18 @@
         </el-select>
       </el-form-item>
 
-
       <el-form-item label="总课时">
         <el-input-number :min="0" v-model="courseInfo.lessonNum" controls-position="right" placeholder="请填写课程的总课时数"/>
       </el-form-item>
+
+
       <!-- 课程简介 -->
       <el-form-item label="课程简介">
-        <el-input v-model="courseInfo.description" placeholder=""/>
+        <tinymce :height="300" v-model="courseInfo.description"/>
       </el-form-item>
-      <!-- 课程封面 TODO -->
 
+
+      <!-- 课程封面 -->
       <el-form-item label="课程封面">
 
         <el-upload
@@ -83,8 +87,10 @@
 
 import course from "@/api/edu/course";
 import subject from "@/api/edu/subject";
+import Tinymce from '@/components/Tinymce' //引入组件
 
 export default {
+  components: { Tinymce },
   data() {
     return {
       saveBtnDisabled: false, // 保存按钮是否禁用
@@ -95,7 +101,7 @@ export default {
         subjectParentId: '',
         lessonNum: 0,
         description: '',
-        cover: '/static/01.jpg',
+        cover: '/static/02.jpg',
         price: 0
       },
       BASE_API: process.env.BASE_API,
@@ -161,3 +167,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.tinymce-container {
+  line-height: 29px;
+}
+</style>
