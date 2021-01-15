@@ -112,16 +112,44 @@ export default {
     }
   },
   created() {
-    if (this.$route.params && this.$route.params.id) {
-      this.courseId = this.$route.params.id
-      this.getInfo()
-    } else {
-      this.getListTeacher()
-      this.getOneSubject()
-    }
+    this.init()
 
   },
+
+  watch: {
+    $route(to, from) {
+      console.log("watch $route")
+      this.init()
+    }
+  },
+
   methods: {
+
+    init() {
+      if (this.$route.params && this.$route.params.id) {
+        this.courseId = this.$route.params.id
+        this.getInfo()
+      } else {
+        console.log("********")
+        this.courseInfo = {
+          title: '',
+          subjectId: '',
+          teacherId: '',
+          subjectParentId: '',
+          lessonNum: 0,
+          description: '',
+          cover: '/static/02.jpg',
+          price: 0
+        }
+        this.courseId = ''
+        this.subjectOneList = []
+        this.subjectTwoList = []
+        this.getListTeacher()
+        this.getOneSubject()
+
+      }
+    },
+
     getInfo() {
       course.getCourseInfo(this.courseId)
         .then(response => {
