@@ -90,7 +90,7 @@ import subject from "@/api/edu/subject";
 import Tinymce from '@/components/Tinymce' //引入组件
 
 export default {
-  components: { Tinymce },
+  components: {Tinymce},
   data() {
     return {
       saveBtnDisabled: false, // 保存按钮是否禁用
@@ -104,6 +104,7 @@ export default {
         cover: '/static/02.jpg',
         price: 0
       },
+      courseId: '',
       BASE_API: process.env.BASE_API,
       teacherList: [],
       subjectOneList: [],//一级分类
@@ -111,10 +112,34 @@ export default {
     }
   },
   created() {
-    this.getListTeacher()
-    this.getOneSubject()
+    if (this.$route.params && this.$route.params.id) {
+      this.courseId = this.$route.params.id
+      this.getInfo()
+    } else {
+      this.getListTeacher()
+      this.getOneSubject()
+    }
+
   },
   methods: {
+    getInfo() {
+      course.getCourseInfo(this.courseId)
+        .then(response => {
+          this.courseInfo = response.data.courseInfoVo
+          // ******* 二级联动之后的数据回显 *********
+          subject.getSubjectList()
+            .then(response => {
+              this.subjectOneList = response.data.list
+              for (let i = 0; i < this.subjectOneList.length; i++) {
+                let oneSubject = this.subjectOneList[i]
+                if (this.courseInfo.subjectParentId === oneSubject.id) {
+                  this.subjectTwoList = oneSubject.children
+                }
+              }
+            })
+          this.getListTeacher()
+        })
+    },
     handleAvatarSuccess(res, file) {
       this.courseInfo.cover = res.data.url
     },
