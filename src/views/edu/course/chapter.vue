@@ -24,7 +24,7 @@
                     <el-button style="" type="text" @click="openVideo(chapter.id)">添加小节</el-button>
                     <el-button style="" type="text" @click="openEditChatper(chapter.id)">编辑</el-button>
                     <el-button type="text" @click="removeChapter(chapter.id)">删除</el-button>
-                </span>
+          </span>
         </p>
 
         <!-- 视频 -->
@@ -35,8 +35,7 @@
             <p>{{ video.title }}
 
               <span class="acts">
-
-                    <el-button style="" type="text">编辑</el-button>
+                    <el-button style="" type="text" @click="openEditVideo(video.id)">编辑</el-button>
                     <el-button type="text" @click="removeVideo(video.id)">删除</el-button>
                 </span>
             </p>
@@ -66,20 +65,43 @@
     </el-dialog>
 
     <!-- 添加和修改课时表单 -->
-
+    <el-dialog :visible.sync="dialogVideoFormVisible" title="添加课时">
+      <el-form :model="video" label-width="120px">
+        <el-form-item label="课时标题">
+          <el-input v-model="video.title"/>
+        </el-form-item>
+        <el-form-item label="课时排序">
+          <el-input-number v-model="video.sort" :min="0" controls-position="right"/>
+        </el-form-item>
+        <el-form-item label="是否免费">
+          <el-radio-group v-model="video.free">
+            <el-radio :label="true">免费</el-radio>
+            <el-radio :label="false">默认</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="上传视频">
+          <!-- TODO -->
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVideoFormVisible = false">取 消</el-button>
+        <el-button :disabled="saveVideoBtnDisabled" type="primary" @click="saveOrUpdateVideo">确 定</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
 <script>
 import chapter from '@/api/edu/chapter'
+import video from "@/api/edu/video";
 
 export default {
   data() {
     return {
-      saveBtnDisabled:false,
-      courseId:'',//课程id
-      chapterVideoList:[],
-      chapter:{ //封装章节数据
+      saveBtnDisabled: false,
+      courseId: '',//课程id
+      chapterVideoList: [],
+      chapter: { //封装章节数据
         title: '',
         sort: 0
       },
@@ -89,21 +111,66 @@ export default {
         free: 0,
         videoSourceId: ''
       },
-      dialogChapterFormVisible:false,//章节弹框
-      dialogVideoFormVisible:false //小节弹框
+      dialogChapterFormVisible: false,//章节弹框
+      dialogVideoFormVisible: false //小节弹框
 
     }
   },
   created() {
     //获取路由的id值
-    if(this.$route.params && this.$route.params.id) {
+    if (this.$route.params && this.$route.params.id) {
       this.courseId = this.$route.params.id
       //根据课程id查询章节和小节
       this.getChapterVideo()
     }
   },
-  methods:{
+  methods: {
 //==============================小节操作====================================
+    openVideo(chapterId) {
+      this.dialogVideoFormVisible = true
+      this.video.chapterId = chapterId
+    },
+
+    addVideo() {
+      this.video.courseId = this.courseId
+      video.addVideo(this.video)
+        .then(response => {
+          this.dialogVideoFormVisible = false
+          this.$message({
+            type: 'success',
+            message: '添加小节成功!'
+          });
+          this.getChapterVideo()
+        })
+    },
+
+    updateVideo() {
+      video.updateVideo(this.video)
+        .then(response => {
+          this.dialogVideoFormVisible = false
+          this.$message({
+            type: 'success',
+            message: '修改小节成功'
+          })
+          this.getChapterVideo()
+        })
+    },
+
+    saveOrUpdateVideo() {
+      if (!this.video.id){
+        this.addVideo()
+      } else {
+        this.updateVideo()
+      }
+    },
+
+    openEditVideo(videoId) {
+      this.dialogVideoFormVisible = true
+      video.getVideo(videoId)
+        .then(response => {
+          this.video = response.data.video
+        })
+    },
 
 
 //==============================章节操作====================================
@@ -116,22 +183,17 @@ export default {
       }).then(() => {  //点击确定，执行then方法
         //调用删除的方法
         chapter.deleteChapter(chapterId)
-          .then(response =>{//删除成功
-            //提示信息
+          .then(response => {
             this.$message({
               type: 'success',
               message: '删除成功!'
             });
-            //刷新页面
             this.getChapterVideo()
           })
-      }) //点击取消，执行catch方法
+      })
     },
-    //修改章节弹框数据回显
     openEditChatper(chapterId) {
-      //弹框
       this.dialogChapterFormVisible = true
-      //调用接口
       chapter.getChapter(chapterId)
         .then(response => {
           this.chapter = response.data.chapter
@@ -165,20 +227,17 @@ export default {
     //修改章节的方法
     updateChapter() {
       chapter.updateChapter(this.chapter)
-        .then(response =>  {
-          //关闭弹框
+        .then(response => {
           this.dialogChapterFormVisible = false
-          //提示
           this.$message({
             type: 'success',
             message: '修改章节成功!'
           });
-          //刷新页面
           this.getChapterVideo()
         })
     },
     saveOrUpdate() {
-      if(!this.chapter.id) {
+      if (!this.chapter.id) {
         this.addChapter()
       } else {
         this.updateChapter()
@@ -192,26 +251,28 @@ export default {
         })
     },
     previous() {
-      this.$router.push({path:'/course/info/'+this.courseId})
+      this.$router.push({path: '/course/info/' + this.courseId})
     },
     next() {
       //跳转到第二步
-      this.$router.push({path:'/course/publish/'+this.courseId})
+      this.$router.push({path: '/course/publish/' + this.courseId})
     }
   }
 }
 </script>
 <style scoped>
-.chanpterList{
+.chanpterList {
   position: relative;
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.chanpterList li{
+
+.chanpterList li {
   position: relative;
 }
-.chanpterList p{
+
+.chanpterList p {
   float: left;
   font-size: 20px;
   margin: 10px 0;
@@ -221,15 +282,17 @@ export default {
   width: 100%;
   border: 1px solid #DDD;
 }
+
 .chanpterList .acts {
   float: right;
   font-size: 14px;
 }
 
-.videoList{
+.videoList {
   padding-left: 50px;
 }
-.videoList p{
+
+.videoList p {
   float: left;
   font-size: 14px;
   margin: 10px 0;
