@@ -116,6 +116,8 @@ export default {
 
     }
   },
+
+
   created() {
     //获取路由的id值
     if (this.$route.params && this.$route.params.id) {
@@ -144,6 +146,7 @@ export default {
         })
     },
 
+
     updateVideo() {
       video.updateVideo(this.video)
         .then(response => {
@@ -156,6 +159,7 @@ export default {
         })
     },
 
+
     saveOrUpdateVideo() {
       if (!this.video.id) {
         this.addVideo()
@@ -164,6 +168,7 @@ export default {
       }
     },
 
+
     openEditVideo(videoId) {
       this.dialogVideoFormVisible = true
       video.getVideo(videoId)
@@ -171,6 +176,7 @@ export default {
           this.video = response.data.video
         })
     },
+
 
     removeVideo(videoId) {
       this.$confirm('此操作将删除小节, 是否继续?', '提示', {
@@ -210,6 +216,8 @@ export default {
           })
       })
     },
+
+
     openEditChatper(chapterId) {
       this.dialogChapterFormVisible = true
       chapter.getChapter(chapterId)
@@ -217,6 +225,8 @@ export default {
           this.chapter = response.data.chapter
         })
     },
+
+
     //弹出添加章节页面
     openChapterDialog() {
       //弹框
@@ -225,6 +235,8 @@ export default {
       this.chapter.title = ''
       this.chapter.sort = 0
     },
+
+
     //添加章节
     addChapter() {
       //设置课程id到chapter对象里面
@@ -242,6 +254,8 @@ export default {
           this.getChapterVideo()
         })
     },
+
+
     //修改章节的方法
     updateChapter() {
       chapter.updateChapter(this.chapter)
@@ -254,6 +268,8 @@ export default {
           this.getChapterVideo()
         })
     },
+
+
     saveOrUpdate() {
       if (!this.chapter.id) {
         this.addChapter()
@@ -261,6 +277,8 @@ export default {
         this.updateChapter()
       }
     },
+
+
     //根据课程id查询章节和小节
     getChapterVideo() {
       chapter.getAllChapterVideo(this.courseId)
@@ -268,9 +286,13 @@ export default {
           this.chapterVideoList = response.data.allChapterVideo
         })
     },
+
+
     previous() {
       this.$router.push({path: '/course/info/' + this.courseId})
     },
+
+
     next() {
       //跳转到第二步
       this.$router.push({path: '/course/publish/' + this.courseId})
