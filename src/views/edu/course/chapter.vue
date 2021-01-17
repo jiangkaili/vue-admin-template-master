@@ -157,7 +157,7 @@ export default {
     },
 
     saveOrUpdateVideo() {
-      if (!this.video.id){
+      if (!this.video.id) {
         this.addVideo()
       } else {
         this.updateVideo()
