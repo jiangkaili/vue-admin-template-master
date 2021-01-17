@@ -126,6 +126,8 @@ export default {
       this.getChapterVideo()
     }
   },
+
+
   methods: {
 //==============================小节操作====================================
     openVideo(chapterId) {
