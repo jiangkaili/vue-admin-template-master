@@ -9,12 +9,14 @@ export default {
     })
   },
 
+
   getListTeacher() {
     return request({
       url: `/eduservice/edu-teacher/findAll`,
       method: 'get'
     })
   },
+
 
   getCourseInfo(id) {
     return request({
@@ -23,12 +25,24 @@ export default {
     })
   },
 
+
   updateCourseInfo(courseInfo) {
     return request({
       url: `/eduservice/course/updateCourseInfo`,
       method: 'post',
       data: courseInfo
     })
+  },
+
+
+  getPublishCourseInfo(courseId) {
+    return request({
+      url: `/eduservice/course/getPublishCourseInfo/${courseId}`,
+      method: 'get',
+    })
   }
 
 }
+
+
+
