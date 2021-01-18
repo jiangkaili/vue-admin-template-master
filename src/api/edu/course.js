@@ -40,6 +40,23 @@ export default {
       url: `/eduservice/course/getPublishCourseInfo/${courseId}`,
       method: 'get',
     })
+  },
+
+
+  getListCourse() {
+    return request({
+      url: `/eduservice/course`,
+      method: 'get',
+    })
+  },
+
+
+  getListCoursePage(current, limit, courseQuery) {
+    return request({
+      url: `/eduservice/course/pageCourseCondition/${current}/${limit}`,
+      method: 'post',
+      data: courseQuery
+    })
   }
 
 }
