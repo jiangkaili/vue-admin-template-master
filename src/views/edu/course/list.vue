@@ -102,7 +102,7 @@ export default {
           this.list = response.data.rows
           this.total = response.data.total
         })
-        .catch(error=>{
+        .catch(error => {
           console.log(error)
         })
     },
@@ -111,6 +111,35 @@ export default {
     resetData() {
       this.courseQuery = {}
       this.getList()
+    },
+
+
+    removeDataById(courseId) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return course.deleteCourseId(courseId)
+      }).then(() => {
+        this.getList()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch((response) => { // 失败
+        if (response === 'cancel') {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: '删除失败'
+          })
+        }
+      })
     }
 
   }

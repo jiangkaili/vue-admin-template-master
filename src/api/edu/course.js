@@ -57,6 +57,14 @@ export default {
       method: 'post',
       data: courseQuery
     })
+  },
+
+
+  deleteCourseId(courseId) {
+    return request({
+      url: `/eduservice/course/${courseId}`,
+      method: 'delete'
+    })
   }
 
 }
