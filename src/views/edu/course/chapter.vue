@@ -88,9 +88,11 @@
         <el-form-item label="上传视频">
           <el-upload
             :on-success="handleVodUploadSuccess"
+            :on-remove="handleVodRemove"
+            :before-remove="beforeVodRemove"
             :on-exceed="handleUploadExceed"
             :file-list="fileList"
-            :action="BASE_API+'/eduvod/video/uploadAlyiVideo/'"
+            :action="BASE_API+'/eduvod/video/uploadAlyiVideo'"
             :limit="1"
             class="upload-demo">
             <el-button size="small" type="primary">上传视频</el-button>
@@ -163,12 +165,9 @@ export default {
       //上传视频名称赋值
       this.video.videoOriginalName = file.name
     },
-
-
     handleUploadExceed() {
       this.$message.warning('想要重新上传视频，请先删除已上传的视频')
     },
-
 
 
     openVideo(chapterId) {
