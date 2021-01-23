@@ -158,15 +158,33 @@ export default {
 
 
   methods: {
-    //上传视频成功调用的方法
     handleVodUploadSuccess(response, file, fileList) {
-      //上传视频id赋值
       this.video.videoSourceId = response.data.videoId
-      //上传视频名称赋值
       this.video.videoOriginalName = file.name
     },
+
+
     handleUploadExceed() {
       this.$message.warning('想要重新上传视频，请先删除已上传的视频')
+    },
+
+
+    beforeVodRemove(file, fileList) {
+      return this.$confirm(`确定移除？${file.name}?`)
+    },
+
+
+    handleVodRemove() {
+      video.deleteAliyunVod(this.video.videoSourceId)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: "删除视频成功"
+          })
+          this.fileList = []
+          this.videoSourceId = ''
+          this.videoOriginalName = ''
+        })
     },
 
 
@@ -174,6 +192,7 @@ export default {
       this.dialogVideoFormVisible = true
       this.video.chapterId = chapterId
     },
+
 
     addVideo() {
       this.video.courseId = this.courseId
